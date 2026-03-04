@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fire Horse 2026 Forecast</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="lantern lantern-left" aria-hidden="true"></div>
+    <div class="lantern lantern-right" aria-hidden="true"></div>
+    <main class="container landing-layout">
+      <section class="panel form-panel">
+        <p class="han-title">丙午流年 · 2026</p>
+        <h1>Fire Horse 2026 Forecast</h1>
+        <p class="subtitle">Auspicious guidance inspired by Chinese metaphysics and CNY symbolism.</p>
+        <div class="ornament" aria-hidden="true">福 禄 寿</div>
+
+        <form id="forecast-form" novalidate>
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" required maxlength="80" placeholder="Your name" />
+
+          <label for="dob">Date of birth</label>
+          <input id="dob" name="dob" type="date" required />
+
+          <label for="country">Country of residence</label>
+          <input id="country" name="country" type="text" required maxlength="80" placeholder="e.g. Malaysia" />
+
+          <label for="timezone">City or timezone (optional but recommended)</label>
+          <input id="timezone" name="timezone" type="text" maxlength="80" placeholder="e.g. Kuala Lumpur or Asia/Kuala_Lumpur" />
+
+          <label for="birthTime">Birth time (optional, improves precision)</label>
+          <input id="birthTime" name="birthTime" type="time" />
+
+          <label for="gender">Gender (optional)</label>
+          <select id="gender" name="gender">
+            <option value="">Prefer not to say</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="non-binary">Non-binary</option>
+          </select>
+
+          <button type="submit">Generate 2026 Forecast</button>
+        </form>
+      </section>
+
+      <section class="panel info-panel">
+        <p class="han-title">报告预览</p>
+        <h2>What You Will Receive</h2>
+        <p class="subtitle">Fast to scan, clear sections, and ranked highlights for 2026.</p>
+
+        <div class="info-list">
+          <article class="info-item">
+            <h3>📌 Core Forecast</h3>
+            <p>Career, relationships, money, health/energy, and key months.</p>
+          </article>
+          <article class="info-item">
+            <h3>⭐ Rated Sections</h3>
+            <p>Each section includes a 1-5 star score and a focused guidance summary.</p>
+          </article>
+          <article class="info-item">
+            <h3>🐉 Zodiac Context</h3>
+            <p>Your zodiac animal and other years with the same zodiac cycle.</p>
+          </article>
+          <article class="info-item">
+            <h3>⚠️ Assumptions</h3>
+            <p>Confidence and precision notes based on birth time and timezone input.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="forecast-engine.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2026 Forecast Report</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="lantern lantern-left" aria-hidden="true"></div>
+    <div class="lantern lantern-right" aria-hidden="true"></div>
+
+    <main class="container report-container">
+      <section class="panel report-panel" id="report-panel" hidden>
+        <p class="han-title">Annual Report</p>
+
+        <header class="zodiac-hero">
+          <div class="paper-cut-wrap" id="zodiac-paper-cut" aria-hidden="true"></div>
+          <div class="zodiac-copy">
+            <div class="profile-score-box" id="profile-score-box"></div>
+            <h1 id="report-title"></h1>
+            <p class="zodiac-en" id="zodiac-en"></p>
+            <p class="subtitle" id="report-note"></p>
+          </div>
+        </header>
+
+        <section class="summary-box">
+          <h3>🧭 General Summary</h3>
+          <div id="overall-summary"></div>
+        </section>
+
+        <div class="profile-summary" id="profile-summary"></div>
+
+        <section class="report-grid" id="report-grid"></section>
+
+        <section class="meta">
+          <h3>📐 Assumptions and Confidence</h3>
+          <p id="report-confidence"></p>
+          <ul id="report-assumptions"></ul>
+        </section>
+
+        <section class="meta">
+          <h3>⚠️ Disclaimers</h3>
+          <ul>
+            <li>For entertainment and self-reflection only.</li>
+            <li>Not financial, medical, legal, or relationship advice.</li>
+            <li>Avoid absolute interpretation; use this as directional guidance.</li>
+          </ul>
+        </section>
+
+        <div class="report-actions no-print">
+          <button id="download-pdf-btn" type="button">Download Detailed PDF</button>
+          <a class="back-link" href="index.html">Generate another report</a>
+        </div>
+      </section>
+
+      <section class="panel" id="empty-panel" hidden>
+        <h1>No Forecast Found</h1>
+        <p class="subtitle">Please generate a forecast first from the home page.</p>
+        <a class="back-link" href="index.html">Go to forecast form</a>
+      </section>
+    </main>
+
+    <script src="report.js"></script>
+  </body>
+</html>
