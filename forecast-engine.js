@@ -308,6 +308,29 @@ function deriveSectionRatings(seed, birthElement) {
   return ratings;
 }
 
+function hashString(value) {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function deriveProfileSpecificRatings({ dob, timezone, birthTime, gender, country, zodiacIndex, birthElement }) {
+  const ratings = {};
+  const shift = ELEMENT_SHIFT[birthElement];
+  const keySeed = hashString(`${dob}|${timezone || "tz?"}|${birthTime || "bt?"}|${gender || "g?"}|${country}|${zodiacIndex}`);
+
+  SECTION_KEYS.forEach((key, index) => {
+    const keyHash = hashString(`${key}|${keySeed}|${index}|${shift}`);
+    const mixed = keyHash ^ Math.imul((index + 1) * 2654435761, 1);
+    ratings[key] = (Math.abs(mixed) % 5) + 1;
+  });
+
+  return ratings;
+}
+
 function buildOverallSummary({ ratings, birthElement, confidenceLabel }) {
   const avg = Math.round(
     (ratings.career + ratings.relationships + ratings.money + ratings.healthEnergy + ratings.keyMonths) / 5
@@ -375,7 +398,15 @@ function buildForecast({ name, dob, country, timezone, birthTime, gender }) {
   const hex = deriveHexagramKey(dob);
   const traits = ELEMENT_TRAITS[birthElement];
   const traitsZh = ELEMENT_TRAITS_ZH[birthElement];
-  const sectionRatings = deriveSectionRatings(hex.seed, birthElement);
+  const sectionRatings = deriveProfileSpecificRatings({
+    dob,
+    timezone,
+    birthTime,
+    gender,
+    country,
+    zodiacIndex: zodiacInfo.zodiacIndex,
+    birthElement
+  });
   const overallSummary = buildOverallSummary({
     ratings: sectionRatings,
     birthElement,
