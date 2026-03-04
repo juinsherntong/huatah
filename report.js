@@ -37,11 +37,15 @@ function card(title, icon, body, rating) {
 function paperCutSvg(zodiacEmoji) {
   return `
     <svg viewBox="0 0 140 140" role="img" aria-label="Traditional paper-cut zodiac motif">
-      <rect x="4" y="4" width="132" height="132" rx="8" fill="#b40513" stroke="#ebbe6c" stroke-width="3"></rect>
-      <rect x="18" y="18" width="104" height="104" rx="6" fill="none" stroke="#f8dba0" stroke-width="1.6"></rect>
-      <circle cx="70" cy="70" r="33" fill="none" stroke="#f7d799" stroke-width="2"></circle>
-      <path d="M70 22v96M22 70h96M36 36l68 68M104 36l-68 68" stroke="#f8e4b8" stroke-width="1.5" opacity="0.55"></path>
-      <text x="70" y="84" text-anchor="middle" fill="#fdf4dc" font-size="44">${zodiacEmoji}</text>
+      <rect x="6" y="6" width="128" height="128" rx="10" fill="#bb0d1b"></rect>
+      <circle cx="70" cy="70" r="41" fill="#fdf2d8"></circle>
+      <circle cx="70" cy="70" r="29" fill="#bb0d1b"></circle>
+      <path d="M70 24 L76 34 L88 34 L79 42 L82 54 L70 47 L58 54 L61 42 L52 34 L64 34 Z" fill="#fdf2d8"></path>
+      <path d="M116 24 L120 30 L128 30 L122 35 L124 43 L116 38 L108 43 L110 35 L104 30 L112 30 Z" fill="#fdf2d8" opacity="0.9"></path>
+      <path d="M24 24 L28 30 L36 30 L30 35 L32 43 L24 38 L16 43 L18 35 L12 30 L20 30 Z" fill="#fdf2d8" opacity="0.9"></path>
+      <path d="M116 116 L120 122 L128 122 L122 127 L124 135 L116 130 L108 135 L110 127 L104 122 L112 122 Z" fill="#fdf2d8" opacity="0.9"></path>
+      <path d="M24 116 L28 122 L36 122 L30 127 L32 135 L24 130 L16 135 L18 127 L12 122 L20 122 Z" fill="#fdf2d8" opacity="0.9"></path>
+      <text x="70" y="84" text-anchor="middle" fill="#fdf2d8" font-size="42">${zodiacEmoji}</text>
     </svg>
   `;
 }
