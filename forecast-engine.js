@@ -2,6 +2,20 @@ const STEMS = ["Jia", "Yi", "Bing", "Ding", "Wu", "Ji", "Geng", "Xin", "Ren", "G
 const BRANCHES = ["Zi (Rat)", "Chou (Ox)", "Yin (Tiger)", "Mao (Rabbit)", "Chen (Dragon)", "Si (Snake)", "Wu (Horse)", "Wei (Goat)", "Shen (Monkey)", "You (Rooster)", "Xu (Dog)", "Hai (Pig)"];
 const ELEMENTS = ["Wood", "Fire", "Earth", "Metal", "Water"];
 const ZODIAC_ANIMALS = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"];
+const BRANCH_TO_INDEX = {
+  zi: 0,
+  chou: 1,
+  yin: 2,
+  mao: 3,
+  chen: 4,
+  si: 5,
+  wu: 6,
+  wei: 7,
+  shen: 8,
+  you: 9,
+  xu: 10,
+  hai: 11
+};
 const ZODIAC_CN = {
   Rat: "鼠",
   Ox: "牛",
@@ -184,12 +198,48 @@ function deriveZodiac(gregorianYear) {
   return ZODIAC_ANIMALS[(gregorianYear - 4) % 12];
 }
 
-function getSameZodiacYears(gregorianYear, startYear = 1900, endYear = 2040) {
+function deriveLunarZodiacInfo(dateUtc) {
+  try {
+    const lunarText = new Intl.DateTimeFormat("en-u-ca-chinese", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC"
+    }).format(dateUtc);
+    const match = lunarText.match(/(\d{3,4})\(([^)]+)\)/);
+    if (!match) {
+      throw new Error("Unable to parse lunar calendar output.");
+    }
+
+    const lunarYear = Number(match[1]);
+    const cycle = match[2].toLowerCase();
+    const branch = (cycle.split("-")[1] || "").trim();
+    const zodiacIndex = BRANCH_TO_INDEX[branch];
+
+    if (Number.isNaN(lunarYear) || zodiacIndex === undefined) {
+      throw new Error("Lunar parse produced invalid values.");
+    }
+
+    return {
+      lunarYear,
+      zodiacIndex,
+      method: "lunar-year"
+    };
+  } catch (error) {
+    const fallbackYear = dateUtc.getUTCFullYear();
+    return {
+      lunarYear: fallbackYear,
+      zodiacIndex: (fallbackYear - 4) % 12,
+      method: "gregorian-fallback"
+    };
+  }
+}
+
+function getSameZodiacYearsByIndex(zodiacIndex, startYear = 1900, endYear = 2040, excludeYear = null) {
   const years = [];
-  const mod = (gregorianYear - 4) % 12;
 
   for (let year = startYear; year <= endYear; year += 1) {
-    if ((year - 4) % 12 === mod && year !== gregorianYear) {
+    if ((year - 4) % 12 === zodiacIndex && year !== excludeYear) {
       years.push(year);
     }
   }
@@ -197,8 +247,8 @@ function getSameZodiacYears(gregorianYear, startYear = 1900, endYear = 2040) {
   return years;
 }
 
-function getNearbySameZodiacYears(gregorianYear, rangeYears = 48) {
-  const full = getSameZodiacYears(gregorianYear, gregorianYear - rangeYears, gregorianYear + rangeYears);
+function getNearbySameZodiacYears(centerYear, zodiacIndex, rangeYears = 48) {
+  const full = getSameZodiacYearsByIndex(zodiacIndex, centerYear - rangeYears, centerYear + rangeYears, centerYear);
   return full.filter((year) => year > 1900).sort((a, b) => a - b);
 }
 
@@ -297,13 +347,14 @@ function deriveProfileScore({ confidenceScore, sectionRatings }) {
 function buildForecast({ name, dob, country, timezone, birthTime, gender }) {
   const dateUtc = parseISODate(dob);
   const birthYear = dateUtc.getUTCFullYear();
+  const zodiacInfo = deriveLunarZodiacInfo(dateUtc);
   const birthElement = deriveBirthElement(dateUtc);
   const yearPillarBirth = deriveYearPillar(birthYear);
-  const zodiac = deriveZodiac(birthYear);
+  const zodiac = ZODIAC_ANIMALS[zodiacInfo.zodiacIndex];
   const zodiacCn = ZODIAC_CN[zodiac];
   const nobleZodiacEn = NOBLE_ZODIAC_MAP[zodiac] || [];
   const nobleZodiacZh = nobleZodiacEn.map((item) => ZODIAC_CN[item]);
-  const sameZodiacYears = getNearbySameZodiacYears(birthYear);
+  const sameZodiacYears = getNearbySameZodiacYears(zodiacInfo.lunarYear, zodiacInfo.zodiacIndex);
   const confidence = deriveConfidence({ birthTime, timezone, country, gender });
   const hex = deriveHexagramKey(dob);
   const traits = ELEMENT_TRAITS[birthElement];
@@ -338,13 +389,15 @@ function buildForecast({ name, dob, country, timezone, birthTime, gender }) {
       english: zodiac,
       chinese: zodiacCn,
       sameYears: sameZodiacYears,
+      baseYear: zodiacInfo.lunarYear,
+      method: zodiacInfo.method,
       noble: {
         english: nobleZodiacEn,
         chinese: nobleZodiacZh
       }
     },
     sections: {
-      birthZodiac: `Your zodiac is ${zodiac}. Other years with the same zodiac: ${sameZodiacYears.join(", ")}. Note: this app uses DOB Gregorian year for zodiac labeling; people born near Lunar New Year (Jan-Feb) may belong to the previous zodiac in strict lunar-year systems.`,
+      birthZodiac: `Your zodiac is ${zodiac}. Other years with the same zodiac: ${sameZodiacYears.join(", ")}. Zodiac base year used: ${zodiacInfo.lunarYear} (${zodiacInfo.method}).`,
       nobleZodiac: `Your noble zodiac allies are ${nobleZodiacEn.join(" and ")}. These signs are traditionally considered supportive for cooperation, mentorship, and timing.`,
       career: traits.career,
       relationships: traits.relationship,
@@ -356,7 +409,7 @@ function buildForecast({ name, dob, country, timezone, birthTime, gender }) {
       ichingLens: `Main hexagram key from DOB+2026 seed ${hex.seed}: upper trigram ${hex.upper}, lower trigram ${hex.lower}, changing line ${hex.changing}. Read this as timing guidance, not fixed fate.`
     },
     sectionsZh: {
-      birthZodiac: `你的生肖是${zodiacCn}（${zodiac}）。同生肖年份有：${sameZodiacYears.join("、")}。说明：本应用按公历出生年标注生肖；若生日接近农历新年（1-2月），严格农历口径下可能归属上一生肖。`,
+      birthZodiac: `你的生肖是${zodiacCn}（${zodiac}）。同生肖年份有：${sameZodiacYears.join("、")}。生肖基准年：${zodiacInfo.lunarYear}（${zodiacInfo.method}）。`,
       nobleZodiac: `你的贵人生肖为${nobleZodiacZh.join("、")}（${nobleZodiacEn.join(" / ")}）。传统上这些生肖更容易在合作、人脉与关键节点上带来助力。`,
       career: traitsZh.career,
       relationships: traitsZh.relationship,
