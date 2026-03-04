@@ -329,34 +329,6 @@ button:hover {
   position: relative;
 }
 
-.profile-score-box {
-  position: absolute;
-  top: 2px;
-  right: 0;
-  text-align: right;
-  padding: 10px 14px;
-  border: 2px solid #d5a84a;
-  border-radius: 12px;
-  background: linear-gradient(145deg, #ffefc5, #f0cc7d);
-  color: #5c3412;
-  font-size: 0.86rem;
-  line-height: 1.25;
-  box-shadow:
-    0 8px 22px rgba(0, 0, 0, 0.2),
-    0 0 0 2px rgba(255, 233, 170, 0.35) inset;
-  animation: score-pop 0.7s ease-out both;
-}
-
-.profile-score-box strong {
-  display: inline-block;
-  margin-top: 3px;
-  font-size: 2.05rem;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  color: #8b1016;
-  text-shadow: 0 2px 0 rgba(255, 234, 192, 0.75);
-}
-
 .summary-box {
   border: 1px solid #e0be78;
   border-radius: 12px;
@@ -522,20 +494,6 @@ ul {
   50% { transform: rotate(-2.5deg); }
 }
 
-@keyframes score-pop {
-  0% {
-    opacity: 0;
-    transform: translateY(-6px) scale(0.92);
-  }
-  70% {
-    opacity: 1;
-    transform: translateY(0) scale(1.04);
-  }
-  100% {
-    transform: translateY(0) scale(1);
-  }
-}
-
 @media (max-width: 700px) {
   .container {
     padding: 12px;
@@ -556,12 +514,6 @@ ul {
   .paper-cut-wrap {
     width: 98px;
     height: 98px;
-  }
-
-  .profile-score-box {
-    position: static;
-    display: inline-block;
-    margin-bottom: 8px;
   }
 
   .lantern {

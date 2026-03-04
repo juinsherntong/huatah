@@ -50,30 +50,6 @@ function paperCutSvg(zodiacEmoji) {
   `;
 }
 
-function fallbackProfileScore(forecast) {
-  const confidenceScore = (forecast.confidence && typeof forecast.confidence.score === "number")
-    ? forecast.confidence.score
-    : 0.55;
-  const r = forecast.sectionRatings || {};
-  const weightedSections = [
-    { key: "career", weight: 0.2 },
-    { key: "relationships", weight: 0.16 },
-    { key: "money", weight: 0.2 },
-    { key: "healthEnergy", weight: 0.16 },
-    { key: "keyMonths", weight: 0.1 },
-    { key: "doActions", weight: 0.08 },
-    { key: "avoidActions", weight: 0.05 },
-    { key: "ichingLens", weight: 0.03 },
-    { key: "nobleZodiac", weight: 0.02 }
-  ];
-  const weightedStars = weightedSections.reduce((acc, item) => {
-    return acc + (r[item.key] || 3) * item.weight;
-  }, 0);
-  const base = (weightedStars / 5) * 100;
-  const confidenceAdjustment = (confidenceScore - 0.55) * 18;
-  return Math.max(0, Math.min(100, Math.round(base + confidenceAdjustment)));
-}
-
 function renderReport(forecast) {
   const panel = document.getElementById("report-panel");
   const empty = document.getElementById("empty-panel");
@@ -86,8 +62,6 @@ function renderReport(forecast) {
   document.getElementById("profile-summary").innerHTML = `<p>${forecast.profileSummary}</p>`;
   document.getElementById("zodiac-en").textContent = `Zodiac: ${forecast.zodiac.english}`;
   document.getElementById("zodiac-paper-cut").innerHTML = paperCutSvg(ZODIAC_EMOJI[forecast.zodiac.english] || "✨");
-  const profileScore = typeof forecast.profileScore === "number" ? forecast.profileScore : fallbackProfileScore(forecast);
-  document.getElementById("profile-score-box").innerHTML = `Profile Score<br><strong>${profileScore}%</strong>`;
 
   const r = forecast.sectionRatings || {};
   const zodiacIcon = ZODIAC_EMOJI[forecast.zodiac.english] || "✨";
