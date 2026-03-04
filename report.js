@@ -55,11 +55,23 @@ function fallbackProfileScore(forecast) {
     ? forecast.confidence.score
     : 0.55;
   const r = forecast.sectionRatings || {};
-  const keys = ["career", "relationships", "money", "healthEnergy", "keyMonths", "doActions", "avoidActions", "ichingLens"];
-  const avgStars = keys.reduce((sum, key) => sum + (r[key] || 3), 0) / keys.length;
-  const starComponent = (avgStars / 5) * 70;
-  const confidenceComponent = confidenceScore * 30;
-  return Math.max(0, Math.min(100, Math.round(starComponent + confidenceComponent)));
+  const weightedSections = [
+    { key: "career", weight: 0.2 },
+    { key: "relationships", weight: 0.16 },
+    { key: "money", weight: 0.2 },
+    { key: "healthEnergy", weight: 0.16 },
+    { key: "keyMonths", weight: 0.1 },
+    { key: "doActions", weight: 0.08 },
+    { key: "avoidActions", weight: 0.05 },
+    { key: "ichingLens", weight: 0.03 },
+    { key: "nobleZodiac", weight: 0.02 }
+  ];
+  const weightedStars = weightedSections.reduce((acc, item) => {
+    return acc + (r[item.key] || 3) * item.weight;
+  }, 0);
+  const base = (weightedStars / 5) * 100;
+  const confidenceAdjustment = (confidenceScore - 0.55) * 18;
+  return Math.max(0, Math.min(100, Math.round(base + confidenceAdjustment)));
 }
 
 function renderReport(forecast) {
