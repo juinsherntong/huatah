@@ -83,11 +83,13 @@ This app is static HTML/CSS/JS, so deployment is simple.
 
 A workflow is already included at `.github/workflows/deploy-pages.yml`.
 
-1. Push to `main` branch.
+1. Push this project to the `main` branch on GitHub.
 2. In GitHub repo settings -> **Pages**:
    - Source: **GitHub Actions**
-3. Wait for action `Deploy static site to GitHub Pages` to complete.
-4. Share the generated Pages URL.
+3. In repo -> **Actions**, run (or wait for) `Deploy static site to GitHub Pages`.
+4. After success, GitHub shows the public URL in:
+   - Settings -> Pages, and
+   - the workflow deployment summary.
 
 ## Architecture
 
